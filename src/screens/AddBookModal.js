@@ -21,7 +21,7 @@ const AddBookModal = ({ route, navigation }) => {
       setTitle(book.title);
       setAuthor(book.author);
       setIsbn(book.isbn || '');
-      setPublicationYear(book.publication_year?.toString() || '');
+      setPublicationYear(book.created_at ? new Date(book.created_at).getFullYear().toString() : '');
     }
     navigation.setOptions({ title: isEditMode ? 'Edit Book' : 'Add New Book' });
   }, [book, navigation, isEditMode]);
@@ -38,7 +38,7 @@ const AddBookModal = ({ route, navigation }) => {
       title,
       author,
       isbn: isbn || null,
-      publication_year: publicationYear ? parseInt(publicationYear, 10) : null,
+      created_at: publicationYear ? new Date(parseInt(publicationYear), 0, 1).toISOString() : new Date().toISOString(),
     };
 
     let error;

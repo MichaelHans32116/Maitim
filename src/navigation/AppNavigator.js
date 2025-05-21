@@ -2,29 +2,65 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../contexts/AuthContext';
+import { StyleSheet } from 'react-native';
+import Constants from 'expo-constants';
 
-import LoginScreen from '../screens/LogInScreen';
+import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
-import BookListScreen from '../screens/BookListScreen'; // We'll create this next
-import AddBookModal from '../screens/AddBookModal'; // Import the modal
-import { COLORS } from '../constants/Color'; // Import COLORS
-import { Platform } from 'react-native'; // For platform specific styling
+import BookListScreen from '../screens/BookListScreen';
+import AddBookModal from '../screens/AddBookModal';
+import { COLORS } from '../constants/Colors';
 
+const HEADER_STYLE = {
+  backgroundColor: COLORS.primaryRed,
+  ...(Constants.platform?.ios 
+    ? {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      }
+    : {
+        elevation: 5,
+      }
+  ),
+};
 
-// ... AuthStack definition ...
+const styles = StyleSheet.create({
+  headerTitleStyle: {
+    fontWeight: 'bold',
+  },
+  headerTintColor: COLORS.white,
+});
 
-const MainStack = createNativeStackNavigator(); // Rename for clarity
+// Auth Stack for login/signup screens
+const AuthStack = createNativeStackNavigator();
 
-const MainAppScreens = () => ( // This is the stack for regular screens
+const AuthScreens = () => (
+  <AuthStack.Navigator
+    screenOptions={{
+      headerStyle: HEADER_STYLE,
+      headerTintColor: styles.headerTintColor,
+      headerTitleStyle: styles.headerTitleStyle,
+    }}
+  >
+    <AuthStack.Screen name="Login" component={LoginScreen} />
+    <AuthStack.Screen name="SignUp" component={SignUpScreen} />
+  </AuthStack.Navigator>
+);
+
+// Main Stack for authenticated screens
+const MainStack = createNativeStackNavigator();
+
+const MainAppScreens = () => (
   <MainStack.Navigator
     screenOptions={{
-      headerStyle: { backgroundColor: COLORS.primaryRed },
-      headerTintColor: COLORS.white,
-      headerTitleStyle: { fontWeight: 'bold' },
+      headerStyle: HEADER_STYLE,
+      headerTintColor: styles.headerTintColor,
+      headerTitleStyle: styles.headerTitleStyle,
     }}
   >
     <MainStack.Screen name="BookList" component={BookListScreen} options={{ title: 'My Books' }}/>
-    {/* Other main screens would go here if not modals */}
   </MainStack.Navigator>
 );
 
@@ -51,15 +87,15 @@ const AppNavigator = () => {
             name="AddBookModal"
             component={AddBookModal}
             options={{
-              presentation: 'modal', // This makes it a modal
-              headerStyle: { backgroundColor: COLORS.primaryRed },
-              headerTintColor: COLORS.white,
-              headerTitleStyle: { fontWeight: 'bold' },
+              presentation: 'modal',
+              headerStyle: HEADER_STYLE,
+              headerTintColor: styles.headerTintColor,
+              headerTitleStyle: styles.headerTitleStyle,
             }}
           />
         </RootStack.Navigator>
       ) : (
-        <AuthStack />
+        <AuthScreens />
       )}
     </NavigationContainer>
   );

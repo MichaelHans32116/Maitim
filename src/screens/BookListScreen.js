@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, Button, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Button, ActivityIndicator, Alert, TouchableOpacity, Platform } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native'; // To refresh data when screen is focused
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -10,7 +10,7 @@ const BookItem = ({ item, onDelete, onEdit }) => (
     <View style={styles.bookInfo}>
       <Text style={styles.bookTitle}>{item.title}</Text>
       <Text style={styles.bookAuthor}>by {item.author}</Text>
-      {item.publication_year && <Text style={styles.bookDetails}>Year: {item.publication_year}</Text>}
+      {item.created_at && <Text style={styles.bookDetails}>Year: {new Date(item.created_at).getFullYear()}</Text>}
       {item.isbn && <Text style={styles.bookDetails}>ISBN: {item.isbn}</Text>}
     </View>
     <View style={styles.actionsContainer}>
